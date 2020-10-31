@@ -1,0 +1,34 @@
+
+// variables
+$background-color: #f8f8f8;
+:root{
+  --row-height: 50px;
+}
+$row-height: 50px;
+.parent-grid{
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: 50px 50px 50px;
+  background-color: #e5e5e5;
+  grid-gap: 1px;
+  border: 1px solid #e5e5e5;
+  >div{
+  background-color: #fff;
+    line-height: 50px;
+    text-align: center;
+}
+}
+.child-grid{
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: $row-height;
+  background-color: blue;
+  grid-gap: 1px;
+  //line-height: 50px;
+  >div{
+    background-color: #c0ccda;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

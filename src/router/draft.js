@@ -9,4 +9,9 @@ export default [
     name: "IndexRender",
     component: () => import("@v/draft/IndexRender")
   },
+  {
+    path: "/DesignCenter",
+    name: 'DesignCenter',
+    component: () => import('@v/DesignCenter')
+  }
 ]

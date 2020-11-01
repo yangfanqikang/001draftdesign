@@ -4,7 +4,6 @@ import configData from './config/index'
 // <label.component.name component={label} id={label.id} />
 export default {
   name: "index",
-  components: {ChildEntry},
   data() {
     return {
       labels: configData[key],

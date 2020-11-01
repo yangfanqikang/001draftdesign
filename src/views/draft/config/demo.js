@@ -81,5 +81,136 @@ export default [
     style: {
       gridArea: "3/19/4/25",
     }
-  }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'SignIssue'
+    },
+    style: {
+      gridArea: "4/1/5/13",
+      // gridTemplateRows: "200px",
+      height: "calc(var(--row-height)*4)",
+      backgroundColor: 'red'
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'Countersign'
+    },
+    style: {
+      gridArea: "4/13/5/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'SuperLeaderOpinion'
+    },
+    style: {
+      gridArea: "5/1/6/25",
+      height: "calc(var(--row-height)*2)",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'MainSendUnit'
+    },
+    style: {
+      gridArea: "6/1/7/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'CopySendUnit'
+    },
+    style: {
+      gridArea: "7/1/8/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'DraftUnit'
+    },
+    style: {
+      gridArea: "8/1/9/9",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'Drafter'
+    },
+    style: {
+      gridArea: "8/9/9/17",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'AuditDrafter'
+    },
+    style: {
+      gridArea: "8/17/9/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'Print'
+    },
+    style: {
+      gridArea: "9/1/10/9",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'Proofreader'
+    },
+    style: {
+      gridArea: "9/9/10/17",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'Num'
+    },
+    style: {
+      gridArea: "9/17/10/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'Attach'
+    },
+    style: {
+      gridArea: "10/1/11/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'ThemeTalk'
+    },
+    style: {
+      gridArea: "11/1/12/25",
+    }
+  },
+  {
+    key: "1",
+    component: {
+      name: 'ContentTitle'
+    },
+    style: {
+      gridArea: "12/1/13/25",
+    }
+  },
+
 ];

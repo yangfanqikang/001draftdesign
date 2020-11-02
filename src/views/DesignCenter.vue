@@ -10,18 +10,25 @@
       <span>用户</span>
     </header>
     <nav>
-      <draggable v-model="arr1" @end="end1" :options="{group:{name: 'itxst',pull:'clone'},sort: true}"  animation="300"  :move="onMove">
-        <transition-group>
-          <div :class="item.id==1?'item forbid':'item'" v-for="item in arr1" :key="item.id">{{item.name}}</div>
-        </transition-group>
-      </draggable>
+      <div class="first-group">标签组</div>
+      <div class="labels">
+        <div v-for="li in compList" :key="li" draggable="true" @dragstart="onDragStart" @drag="isEnter=true">{{li}}</div>
+      </div>
+
     </nav>
     <main>
-      <draggable v-model="arr2" @end="end2" group="itxst"  animation="300" :move="onMove">
-        <transition-group>
-          <div :class="item.id==12?'item2 forbid':'item2'" v-for="item in arr2" :key="item.id">{{item.name}}</div>
-        </transition-group>
-      </draggable>
+      <div class="design-header">
+        <el-button-group>
+          <el-button type="primary">预览</el-button>
+          <el-button type="primary">清空</el-button>
+        </el-button-group>
+      </div>
+      <div class="design-container" :class="[{isEnter: isEnter}]" @dragover="(e)=>{e.preventDefault()}" @dragstart="onDragStart" @drop="onDrop">
+        <div class="item" draggable="true" @dragstart="e=>onDragStartC(e,item)"  @drop="e=>onDropC(e,item)"  @dragover="(e)=>{e.preventDefault()}" v-for="(item, index) in items" :key="item.id" :style="item.style" @click="selectedItem(index)" :class="currentIndex === index ? 'isActive': ''">
+          <div :is="item.name"></div>
+        </div>
+      </div>
+      <div class="design-footer"></div>
     </main>
     <aside>属性</aside>
     <footer>页脚</footer>
@@ -31,63 +38,75 @@
 <script>
 const componentsContext = require.context("../components/draft", true, /\.vue$/);
 const compList = componentsContext.keys().map(key=>componentsContext(key).default.name)
-import Draggable from 'vuedraggable'
 export default {
   name: "DesignCenter",
-  components: {
-    Draggable
-  },
   data() {
     return {
-      arr1:[
-        { id: 1, name: 'www.itxst.com（不允许停靠）' },
-        { id: 2, name: 'www.jd.com' },
-        { id: 3, name: 'www.baidu.com' },
-        { id: 5, name: 'www.google.com' },
-        { id: 4, name: 'www.taobao.com（不允许拖拽）' }
+      compList,
+      items: [
+        {
+          key:'',
+          id: '1',
+          name: 'Attach',
+          style: {
+            gridArea: '1/1/2/25',
+            gridTemplateRows: '50px'
+          }
+        },
+        {
+          key:'',
+          id: '2',
+          name: 'AuditDrafter',
+          style: {
+            gridArea: '2/1/3/25',
+            gridTemplateRows: '50px'
+          }
+        },
       ],
-      arr2:[
-        { id: 11, name: '常用菜单' },
-      ],
-      moveId:-1
+      isEnter: false,
+      currentIndex: -1
     }
   },
   created() {
 
   },
   methods: {
-    //左边往右边拖动时的事件
-    end1(e){
-      console.log(e)
-      var that=this;
-      var  items=this.arr2.filter(function(m){
-        return  m.id==that.moveId
-      })
-      //如果左边
-      if(items.length<2) return;
-      this.arr2.splice(e.newDraggableIndex, 1)
+    onDragStart(e){
+      this.isEnter = true
+      console.log('开始拖拽',e.target.innerText)
+      e.dataTransfer.setData('name', e.target.innerText)
     },
-    //右边往左边拖动时的事件
-    end2(e){
-      console.log(e)
-      var that=this;
-      var  items=this.arr1.filter(function(m){
-        return  m.id==that.moveId
-      })
-      //如果左边
-      if(items.length<2) return;
-      this.arr1.splice(e.newDraggableIndex, 1)
+    onDrop(e){
+      this.isEnter = false
+      console.log(e.dataTransfer.getData('name'))
+      this.items = this.items.concat(e.dataTransfer.getData('name'))
+      console.log('放下',e)
     },
-    //move回调方法
-    onMove(e,originalEvent){
-      this.moveId=e.relatedContext.element.id;
-      //不允许停靠
-      if (e.relatedContext.element.id == 1) return false;
-      //不允许拖拽
-      if (e.draggedContext.element.id == 4) return false;
-      if (e.draggedContext.element.id == 11) return false;
-      return true;
+    selectedItem(index){
+      console.log('>>>>>>',index)
+      this.currentIndex = index
     },
+    onDragStartC(e, item){
+      // e.preventDefault()
+      e.stopPropagation()
+      e.dataTransfer.setData('item', JSON.stringify(item))
+      console.log('>>拖拽开始', item)
+    },
+    onDropC(e, item){
+      // e.preventDefault()
+      e.stopPropagation()
+      // 交换位置
+      let pre = JSON.parse(e.dataTransfer.getData('item'))
+      let preIndex = this.items.findIndex(x=> x.id === pre.id)
+      let currentIndex = this.items.findIndex(x=> x.id === item.id)
+      console.log(preIndex, currentIndex)
+      this.$set(this.items, preIndex, item)
+      this.$set(this.items, currentIndex, pre)
+      // this.items[preIndex] = item
+      // this.items[currentIndex] = pre
+      console.log(this.items)
+      console.log('>>>拖拽结束',e.target)
+    }
   },
 }
 </script>
@@ -96,7 +115,7 @@ export default {
 .DesignCenter {
   display: grid;
   height: 100vh;
-  grid-template-columns: 200px auto 200px;
+  grid-template-columns: 250px auto 200px;
   grid-template-rows: 60px auto 60px;
   grid-template-areas:
         "header header header"
@@ -124,65 +143,65 @@ export default {
       width: 40px;
     }
   }
-
-  .name-list{
-    >li{
+  nav{
+    text-align: left;
+    padding: 10px;
+    .first-group{
+      font-size: 24px;
       line-height: 2em;
-      font-size: 16px;
-      text-align: left;
-      list-style: none;
+    }
+    >.labels{
+      display: flex;
+      flex-flow: wrap row;
+      >div{
+        display: inline-block;
+        background-color: #fff;
+        padding: 5px 10px;
+        border: 1px dashed darken($--draft-color,20%);
+        border-radius: 5px;
+        margin: 0 10px 10px 0;
+        &:hover{
+          border-color: $--primary-color;
+          color: $--primary-color;
+          cursor: pointer;
+        }
+      }
+    }
+
+  }
+  main{
+    >.design-header{
+      height: 60px;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      padding-right: 20px;
+    }
+    >.design-container{
+      margin: 5px 20px 0;
+      border: 1px dashed #42b983;
+      //border-radius: 5px;
+      min-height: 900px;
+      display: grid;
+      grid-template-columns: repeat(24,1fr);
+      grid-template-rows: 50px;
+      grid-gap: 1px;
+      background-color: yellow;
+      >div{
+        background-color: #fff;
+      }
+      >div:hover{
+        cursor: pointer;
+        background-color: #e5e5e5;
+      }
+      >div.isActive{
+        border: 2px solid orchid;
+      }
+      &.isEnter{
+        border: 1px dashed red;
+      }
     }
   }
-  .xxx{
-    min-height: 800px;
-    background-color: red;
-  }
-}
-.itxst {
-  margin: 10px;
-  text-align :left;
-}
-.col {
-  width: 40%;
-  flex: 1;
-  padding: 10px;
-  border: solid 1px #eee;
-  border-radius: 5px;
-  float: left;
-}
-.col + .col {
-  margin-left: 10px;
-}
-.item {
-  padding: 6px 12px;
-  margin: 0px 10px 0px 10px;
-  border: solid 1px #eee;
-  background-color: #f1f1f1;
-  text-align: left;
-}
-.item + .item {
-  border-top: none;
-  margin-top: 6px;
-}
-
-.item:hover {
-  background-color: #fdfdfd;
-  cursor: move;
-}
-.item2 {
-  padding: 6px 12px;
-  margin: 0px 10px 0px 10px;
-  border: solid 1px #eee;
-  background-color: pink;
-  text-align: left;
-}
-.item2 + .item2 {
-  border-top: none;
-  margin-top: 6px;
-}
-
-.item2:hover {
-  outline: solid 1px #ddd;
-  cursor: move;
 }
 </style>

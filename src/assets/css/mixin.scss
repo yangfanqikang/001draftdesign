@@ -7,7 +7,7 @@
     clear: both;
   }
 }
- 
+
 // 多行隐藏
 @mixin textoverflow($clamp:1) {
   display: block;
@@ -33,4 +33,10 @@
   -webkit-flex-direction: $fd;
   flex-wrap: $fw;
   -webkit-flex-wrap: $fw;
+}
+
+.flexCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

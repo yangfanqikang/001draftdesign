@@ -16,18 +16,22 @@ export default {
       babelData: []
     }
   },
+  created() {
+    this.babelData = isCPC(this)
+    console.log('......')
+  },
   render() {
     // let _data = this.$data
     // console.log(isCPC(this))
-    console.log(this._self)
-    let _this = this._self
-    this.babelData = isCPC(_this).group
-    let attrs = isCPC(_this).attrs
-    console.log(isCPC(_this))
+    // console.log(this._self)
+    // let _this = this._self
+
+    let attrs = this.babelData.attrs
+    // console.log(isCPC(_this))
     return (
       <div>
         <div class="BabelRender">
-          {this.babelData.map(li => {
+          {this.babelData.group.map(li => {
             return (
               <ele style={li.style} nativeOn={li.nativeOn} on={li.on}>
                 {li.nodeValue}
@@ -46,6 +50,9 @@ export default {
     getValue(value){
       console.log(value)
       this.babelData.group[3].nodeValue = value
+
+      this.babelData = JSON.parse(JSON.stringify(this.babelData))
+      // console.log(this.babelData.group)
     }
   }
 }

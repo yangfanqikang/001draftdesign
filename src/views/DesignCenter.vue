@@ -20,22 +20,47 @@
     <main>
       <div class="design-header">
         <el-button-group>
+          <el-button @click="addDraftShow=true">新建稿纸</el-button>
           <el-button @click="dialogVisible = true">选择稿纸</el-button>
           <el-button type="primary">预览</el-button>
           <el-button type="primary">清空</el-button>
         </el-button-group>
       </div>
-      <div class="design-container" :class="[{isEnter: isEnter}]" @dragover="(e)=>{e.preventDefault()}"
+      <div v-if="!addDraftShow" class="design-container" :class="[{isEnter: isEnter}]" @dragover="(e)=>{e.preventDefault()}"
            @dragstart="onDragStart" @drop="onDrop">
-        <div class="item" draggable="true" @dragstart="e=>onDragStartC(e,item)" @drop="e=>onDropC(e,item)"
-             @dragover="(e)=>{e.preventDefault()}" v-for="(item, index) in items" :key="item.id" :style="item.style"
-             @click="selectedItem(index)" :class="currentIndex === index ? 'isActive': ''">
-          <div :is="item.name"></div>
+<!--        <div class="item" draggable="true" @dragstart="e=>onDragStartC(e,item)" @drop="e=>onDropC(e,item)"-->
+<!--             @dragover="(e)=>{e.preventDefault()}" v-for="(item, index) in items" :key="item.id" :style="item.style"-->
+<!--             @click="selectedItem(index)" :class="currentIndex === index ? 'isActive': ''">-->
+<!--          <div :is="item.name"></div>-->
+<!--        </div>-->
+      </div>
+      <div class="initGrid" v-else>
+        <el-row type="flex" :gutter="20" justify="center">
+          <el-col :span="12">
+            <h3 style="text-align: center;">行</h3><el-input-number v-model="rowNum" @change="handleChangeRowCol('row')" :min="1" label="描述文字"></el-input-number>
+          </el-col>
+          <el-col :span="12">
+            <h3 style="text-align: center;">列</h3><el-input-number v-model="colNum" @change="handleChangeRowCol('col')" :min="1" :max="24" label="描述文字"></el-input-number>
+          </el-col>
+        </el-row>
+        <div class="show-grid" ref="showGrid">
+          <div v-for="(li,index) in showList" :style="li.style" @click="selectedItem(index)" :key="index" :class="currentIndex === index ? 'isActive': ''">
+            {{ index }}</div>
         </div>
       </div>
       <div class="design-footer"></div>
     </main>
-    <aside>属性</aside>
+    <aside>
+      <h3>设置</h3>
+      <div>
+        占===<el-input-number v-model="showList[currentIndex].style.gridColumnStart" @change="handleChangeRowCol('row')" :min="1" label="描述文字"></el-input-number>===行
+      </div>
+     <div>
+       占===<el-input-number v-model="showList[currentIndex].style.gridRowStart" @change="handleChangeRowCol('col')" :min="1" :max="24" label="描述文字"></el-input-number>===列
+     </div>
+      {{showList[currentIndex].style.gridRowStart}}
+      {{showList[currentIndex].style.gridColumnStart}}
+    </aside>
     <footer>页脚</footer>
     <el-dialog
       title="选择稿纸"
@@ -81,17 +106,7 @@
           </el-pagination>
         </el-tab-pane>
         <el-tab-pane label="新增稿纸" name="second">
-            <el-row type="flex" :gutter="20" justify="center">
-              <el-col :span="8">
-                <h3 style="text-align: center;">行</h3><el-input-number v-model="rowNum" @change="handleChangeRowCol('row')" :min="1" label="描述文字"></el-input-number>
-              </el-col>
-               <el-col :span="8">
-                 <h3 style="text-align: center;">列</h3><el-input-number v-model="colNum" @change="handleChangeRowCol('col')" :min="1" :max="24" label="描述文字"></el-input-number>
-               </el-col>
-            </el-row>
-          <div class="show-grid">
-            <div v-for="li in showList" :key="li.style.gridArea" :style="li.style"></div>
-          </div>
+
         </el-tab-pane>
       </el-tabs>
       <span slot="footer" class="dialog-footer">
@@ -131,7 +146,7 @@ export default {
         // },
       ],
       isEnter: false,
-      currentIndex: -1,
+      currentIndex: 0,
       dialogVisible: false,
       activeName: 'second',
       tableData: [{
@@ -170,32 +185,48 @@ export default {
       showList: [
         {
           style: {
-            gridArea: '1/1/2/13'
+            gridColumnStart: '1 span',
+            gridRowStart: '1 span',
           }
         },
         {
           style: {
-            gridArea: '1/13/2/25'
+            gridColumnStart: '1 span',
+            gridRowStart: '1 span',
           }
         },
         {
           style: {
-            gridArea: '2/1/3/13'
+            gridColumnStart: '1 span',
+            gridRowStart: '1 span',
           }
         },
         {
           style: {
-            gridArea: '2/13/3/25'
+            gridColumnStart: '1 span',
+            gridRowStart: '1 span',
           }
         },
-      ]
+      ],
+      addDraftShow: false,
     }
   },
   created() {
 
   },
   methods: {
-    handleChangeRowCol(type){},
+    handleChangeRowCol(type){
+      if (type === 'row'){
+        this.rowNum = this.rowNum++
+        this.$refs.showGrid.style.gridTemplateRows=`repeat(${this.rowNum},50px)`
+
+      } else {
+        this.colNum = this.colNum++
+        this.$refs.showGrid.style.gridTemplateColumns=`repeat(${this.colNum},1fr)`
+      }
+      let n = this.rowNum * this.colNum
+      this.showList = new Array(n)
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -259,7 +290,7 @@ export default {
 .DesignCenter {
   display: grid;
   height: 100vh;
-  grid-template-columns: 300px auto 200px;
+  grid-template-columns: 300px auto 300px;
   grid-template-rows: 60px auto 60px;
   grid-template-areas:
         "header header header"
@@ -331,7 +362,36 @@ export default {
       align-items: center;
       padding-right: 20px;
     }
+    >.initGrid{
+      min-height: 900px;
+      padding: 20px;
+      .show-grid{
+        margin-top: 40px;
+        background-color: $--draft-color;
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        grid-template-rows: repeat(2, 50px);
+        border: 1px solid $--draft-color;
+        grid-gap: 1px;
+        >div{
+          background-color: #fff;
+          cursor: pointer;
+          &:hover{
+            background-color: #f0f0f0;
+          }
+          &.isActive {
+            border: 1px solid #f00;
+            box-shadow: 0 0 5px #f00;
+            z-index: 1000;
+          }
+          &.isEnter {
+            border: 1px dashed red;
+          }
+        }
+      }
 
+
+    }
     > .design-container {
       margin: 5px 20px 0;
       border: 1px dashed #42b983;
@@ -341,7 +401,6 @@ export default {
       grid-template-columns: repeat(24, 1fr);
       grid-template-rows: 50px;
       grid-gap: 1px;
-
       > div {
         background-color: #fff;
       }
@@ -360,17 +419,11 @@ export default {
       }
     }
   }
-}
-.show-grid{
-  margin-top: 40px;
-  background-color: $--draft-color;
-  display: grid;
-  grid-template-columns: repeat(24,1fr);
-  grid-template-rows: repeat(2, 50px);
-  border: 1px solid $--draft-color;
-  grid-gap: 1px;
-  >div{
-    background-color: #fff;
+  aside{
+    >div{
+      margin-top: 20px;
+    }
   }
 }
+
 </style>

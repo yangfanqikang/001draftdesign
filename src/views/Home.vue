@@ -15,3 +15,8 @@ export default {
   }
 };
 </script>
+<style>
+.home{
+  height: 100%;
+}
+</style>

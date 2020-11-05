@@ -27,8 +27,8 @@ export default {
 .hello{
   box-sizing: border-box;
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: url("../assets/img/home.svg") no-repeat center center / 50% content-box content-box;
   background-size: cover;
   overflow: hidden;

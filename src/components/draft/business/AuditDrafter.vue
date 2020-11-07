@@ -6,7 +6,8 @@
 
 <script>
 export default {
-  name: "AuditDrafter"
+  name: "AuditDrafter",
+  chName: '校稿人'
 }
 </script>
 

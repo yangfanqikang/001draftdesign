@@ -15,6 +15,11 @@ export default [
     component: () => import('@v/DesignCenter')
   },
   {
+    path: "/VueDesign",
+    name: 'VueDesign',
+    component: () => import('@v/VueDesign')
+  },
+  {
     path: "/BabelRender",
     name: 'BabelRender',
     component: () => import('@v/draft/BabelRender')

@@ -7,7 +7,8 @@
 
 <script>
 export default {
-  name: "Attach"
+  name: "Attach",
+  chName: '附件'
 }
 </script>
 

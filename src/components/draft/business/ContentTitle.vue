@@ -6,7 +6,8 @@
 
 <script>
 export default {
-  name: "ContentTitle"
+  name: "ContentTitle",
+  chName: '标题'
 }
 </script>
 

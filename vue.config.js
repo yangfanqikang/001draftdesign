@@ -74,6 +74,7 @@ module.exports = {
           @import "assets/css/index.scss";
           @import "assets/css/mixin.scss";
           @import "assets/css/variables.scss";
+          @import "assets/css/var.scss";
           $cdn: "${defaultSettings.$cdn}";
           `
             }

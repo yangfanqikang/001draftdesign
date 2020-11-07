@@ -6,7 +6,8 @@
 
 <script>
 export default {
-  name: "CopySendUnit"
+  name: "CopySendUnit",
+  chName: '抄送单位'
 }
 </script>
 

@@ -6,7 +6,8 @@
 
 <script>
 export default {
-  name: "Countersign"
+  name: "Countersign",
+  chName: '会签'
 }
 </script>
 

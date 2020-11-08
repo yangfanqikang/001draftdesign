@@ -20,6 +20,11 @@ export default [
     component: () => import('@v/VueDesign')
   },
   {
+    path: "/GridLayoutDemo",
+    name: 'GridLayoutDemo',
+    component: () => import('@v/GridLayoutDemo')
+  },
+  {
     path: "/BabelRender",
     name: 'BabelRender',
     component: () => import('@v/draft/BabelRender')

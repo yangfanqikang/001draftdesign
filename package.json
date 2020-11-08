@@ -32,7 +32,14 @@
     "prettier": "^1.19.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "babel-plugin-transform-flow-comments": "^6.7.0",
+    "element-resize-detector": "^1.2.1",
+    "@interactjs/interactjs": "^1.10.0",
+    "@interactjs/auto-start": "^1.10.0",
+    "@interactjs/actions": "^1.10.0",
+    "@interactjs/modifiers": "^1.10.0",
+    "@interactjs/dev-tools": "^1.10.0"
   },
   "eslintConfig": {
     "root": true,

@@ -78,11 +78,11 @@
                   >
                     <grid-item v-for="(item, itemIndex) in initDataMap[designType]" :x="item.x" :y="item.y" :w="item.w" :h="item.h"
                                :i="item.i" :key="item.i">
-                      <div :title="itemIndex" :class="currentIndex === itemIndex ? 'isActive': ''"
+                      <div :contenteditable="designType === 'label'" :title="itemIndex" :class="currentIndex === itemIndex ? 'isActive': ''"
                            @click="selectedItem(itemIndex)" @dragover="(e)=>{e.preventDefault()}" @drop="onDrop"
-                           style="height: 100%;">
+                           style="height: 100%;" @change="testContenteditable1" @blur="testContenteditable" @input="testContenteditable" >
                         {{ item.i }}
-                        <span v-if="designType === 'label'">{{item.cName}}</span>
+                        <span v-if="designType === 'label'" contenteditable="true">{{item.cName}}</span>
                         <span v-else>{{ item.i }}</span>
 
                         <component :is="item.cName" v-if="designType !=='label' && item.cName"></component>
@@ -238,6 +238,12 @@ export default {
     selectedItem(index) {
       this.currentIndex = index
     },
+    testContenteditable(e){
+      console.log(e.target);
+    },
+    testContenteditable1(e){
+      console.log(e.target);
+    },
     handleChange(val) {
       console.log(val);
     },
@@ -308,10 +314,17 @@ export default {
       }
 
       background-color: #fff;
-
+      &[contenteditable=true]:hover{
+        outline: none;
+      }
+      &[contenteditable=true]:focus{
+        outline: none;
+        //border: 1px solid cyan;
+      }
       &.isActive {
         //border: 1px solid #f00;
         box-shadow: 0 0 5px 1px $--color-primary-light-1 inset !important;
+        background-color: #fff;
         //z-index: 1000;
       }
     }

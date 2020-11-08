@@ -28,7 +28,9 @@
 
               </el-collapse-item>
               <el-collapse-item title="通用组件" name="2">
-                <div></div>
+                <div v-for="li in commons" :key="li.label" draggable="true" :label="li" @dragstart="onDragStart" @drag="isEnter = true">
+                  {{ li.name }} <span style="display: none">{{li}}</span>
+                </div>
               </el-collapse-item>
             </el-scrollbar>
           </div>
@@ -133,6 +135,7 @@ const compList = componentsContext.keys().map(key => componentsContext(key).defa
 import VueGridLayout from 'vue-grid-layout'
 import labels from "@/const/label";
 import dialogs from '@/const/dialog'
+import commons from '@/const/elementComponent'
 const typeMap = {
   label: '标签',
   draft: '稿纸',
@@ -166,7 +169,6 @@ const labelLayout = [
   {cName: '', x: 2, y: 0, w: 2, h: 4, i: '1'},
   {cName: '', x: 4, y: 0, w: 2, h: 5, i: '2'},
 ]
-
 const initDataMap = {
   label: labelLayout,
   draft: testLayout,
@@ -205,6 +207,7 @@ export default {
       isEnter: false,
       labels,
       dialogs,
+      commons,
       input: ''
     }
   },

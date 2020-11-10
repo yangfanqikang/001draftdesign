@@ -2,13 +2,27 @@
   <div class="GridDesign">
     <nav class="viewport-height">
       <el-scrollbar style="height: 100%;">
-        <h3>控件</h3>
-        <el-collapse v-model="activeNames" @change="handleChange">
-          <el-collapse-item title="一致性 Consistency" name="1">
-            <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-            <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-          </el-collapse-item>
-        </el-collapse>
+        <div style="padding: 10px;">
+          <h3>控件</h3>
+          <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse-item title="常用标签" name="1">
+              <div v-for="li in labels" :key="li.label" draggable="true" :label="li" @dragstart="onDragStart" @drag="isEnter = true">
+                {{ li.label }} <span style="display: none">{{li}}</span>
+              </div>
+            </el-collapse-item>
+            <el-collapse-item title="常用稿纸" name="2">
+              <div v-for="li in commons" :key="li.name" draggable="true" :label="li" @dragstart="onDragStart" @drag="isEnter = true">
+                {{ li.name }} <span style="display: none">{{li}}</span>
+              </div>
+            </el-collapse-item>
+            <el-collapse-item title="通用组件" name="3">
+              <div v-for="li in commons" :key="li.name" draggable="true" :label="li" @dragstart="onDragStart" @drag="isEnter = true">
+                {{ li.name }} <span style="display: none">{{li}}</span>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+
       </el-scrollbar>
     </nav>
     <main class="viewport-height">
@@ -89,7 +103,8 @@
 import GridLayout from '@/components/vue-grid-layout/GridLayout'
 import GridItem from '@/components/vue-grid-layout/GridItem'
 import {draftData, labelData} from '@/views/draft/config/const'
-
+import labels from '@/const/label'
+import commons from '@/const/elementComponent'
 const initDataMap = {
   label: labelData,
   draft: draftData,
@@ -115,12 +130,22 @@ export default {
       marginX: 1,
       marginY: 1,
       //****
+      labels,
+      commons,
+      isEnter: false,
     }
   },
   mounted() {
     this.index = this.initDataMap[this.designType].length;
   },
   methods: {
+    //*******
+    onDragStart(e) {
+      this.isEnter = true
+      console.log('开始拖拽', e.target.children[0].innerText)
+      // console.log('开始拖拽', e.target.children[0].innerText)
+      e.dataTransfer.setData('label', e.target.children[0].innerText)
+    },
     //******
     selectedItem(index) {
       this.currentIndex = index
@@ -183,6 +208,26 @@ export default {
     background-color: #fff;
     ::v-deep .el-scrollbar__wrap {
       overflow-x: hidden;
+    }
+  }
+  div::v-deep .el-collapse-item__wrap > .el-collapse-item__content {
+    display: flex !important;
+    flex-flow: wrap row !important;
+    justify-content: flex-start;
+
+    > div {
+      display: inline-flex;
+      background-color: #fff;
+      padding: 5px 10px;
+      border: 1px dashed darken($--draft-color, 20%);
+      border-radius: 5px;
+      margin: 0 10px 10px 0;
+
+      &:hover {
+        border-color: $--primary-color;
+        color: $--primary-color;
+        cursor: move;
+      }
     }
   }
   .vue-grid-layout {

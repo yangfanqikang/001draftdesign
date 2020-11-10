@@ -33,5 +33,10 @@ export default [
     path: "/LabelRender",
     name: 'LabelRender',
     component: () => import('@v/draft/LabelRender')
+  },
+  {
+    path: "/GridDesign",
+    name: 'GridDesign',
+    component: () => import('@v/GridDesign')
   }
 ]

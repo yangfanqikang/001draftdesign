@@ -1,4 +1,4 @@
-export function isCPC(vm){
+export function isCPC(vm, json){
   // console.log('==========',vm)
   return {
     name: '标签名', //标签名

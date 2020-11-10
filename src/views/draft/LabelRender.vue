@@ -2,13 +2,14 @@
   <div>
     <div class="BabelRender">
       <ele v-for="(li,index) in labelData.group" :style="li.style" :key="index" :nativeOn="li.nativeOn" :on="li.on">{{li.nodeValue}}</ele>
+      <slot :value="value"></slot>
     </div>
     <SelectBox ref="selectBox" :attrs="labelData.attrs" @getValue="getValue"></SelectBox>
   </div>
 </template>
 
 <script>
-// import babelData from './config/babelData'
+import babelData from './config/babelData'
 // import babelM from "@/views/draft/mixins/babelM";
 import {isCPC} from './config/isCPC'
 import SelectBox from "@/views/draft/components/SelectBox";
@@ -19,34 +20,34 @@ export default {
   // mixins: [babelM],
   data() {
     return {
-      labelData: {}
+      labelData: babelData
     }
   },
   created() {
-    this.labelData = isCPC(this)
+    // this.labelData = isCPC(this)
   },
   // render() {
-  //   // let _data = this.$data
-  //   // console.log(isCPC(this))
-  //   console.log(this._self)
-  //   let _this = this._self
-  //   let list = isCPC(_this).group
-  //   let attrs = isCPC(_this).attrs
-  //   console.log(isCPC(_this))
-  //   return (
-  //     <div>
-  //       <div class="BabelRender">
-  //         {list.map(li => {
-  //           return (
-  //             <ele style={li.style} nativeOn={li.nativeOn} on={li.on}>
-  //               {li.nodeValue}
-  //             </ele>
-  //           )
-  //         })}
-  //       </div>
-  //       <SelectBox ref="selectBox" attrs={attrs} on={{getValue: this.getValue}}></SelectBox>
-  //     </div>
-  //   )
+    // let _data = this.$data
+    // console.log(isCPC(this))
+    // console.log(this._self)
+    // let _this = this._self
+    // let list = this.labelData.group
+    // let attrs = this.labelData.attrs
+    // console.log(isCPC(_this))
+    // return (
+    //   <div>
+    //     <div class="BabelRender">
+    //       {list.map(li => {
+    //         return (
+    //           <ele style={li.style} nativeOn={li.nativeOn} on={li.on}>
+    //             {li.nodeValue}
+    //           </ele>
+    //         )
+    //       })}
+    //     </div>
+    //     <SelectBox ref="selectBox" attrs={attrs} on={{getValue: this.getValue}}></SelectBox>
+    //   </div>
+    // )
   // },
   methods: {
     $_handleClick(){

@@ -2,7 +2,7 @@
   <div ref="item" class="vue-grid-item" :class="classObj" :style="style">
     <slot></slot>
     <span v-if="resizableAndNotStatic" ref="handle" :class="resizableHandleClass"></span>
-    <span v-if="resizableAndNotStatic" ref="handle" :class="resizableHandleClassL"></span>
+<!--    <span v-if="resizableAndNotStatic" ref="handle" :class="resizableHandleClassL"></span>-->
     <!--<span v-if="draggable" ref="dragHandle" class="vue-draggable-handle"></span>-->
   </div>
 </template>

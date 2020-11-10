@@ -32,13 +32,13 @@
         <el-card style="margin: 0 20px;">
           <grid-layout
             :layout.sync="initDataMap[designType]"
-            :col-num="24"
-            :row-height="30"
+            :col-num="colNum"
+            :row-height="rowHeight"
             :is-draggable="true"
             :is-resizable="true"
             :is-mirrored="false"
             :vertical-compact="true"
-            :margin="[1, 1]"
+            :margin="[parseInt(marginX), parseInt(marginY)]"
             :use-css-transforms="true"
             @layout-updated="layoutUpdatedEvent"
           >
@@ -107,8 +107,18 @@ export default {
       activeNames: ['1'],
       designType: 'draft',
       initDataMap,
-      currentIndex: 0
+      currentIndex: 0,
+      //****
+      index: 0,
+      colNum: 24,
+      rowHeight: 30,
+      marginX: 1,
+      marginY: 1,
+      //****
     }
+  },
+  mounted() {
+    this.index = this.initDataMap[this.designType].length;
   },
   methods: {
     //******
@@ -134,7 +144,17 @@ export default {
     },
     //******
     //******
-    addItemDynamically() {},
+    addItemDynamically() {
+      let item = {
+        x: (this.initDataMap[this.designType].length * 2) % (this.colNum || 24),
+        y: this.initDataMap[this.designType].length + (this.colNum || 24),
+        w: 2,
+        h: 2,
+        i: this.index + "",
+      }
+      this.index++;
+      this.initDataMap[this.designType].push(item);
+    },
     save() {},
     preview() {},
     reset() {},

@@ -43,7 +43,7 @@
         </el-button-group>
       </header>
       <el-scrollbar style="height: calc(100vh - 100px);box-shadow: 0 1px 5px #e5e5e5">
-        <el-card style="margin: 0 20px;">
+        <el-card style="margin: 0 20px 40px;">
           <grid-layout
             :layout.sync="initDataMap[designType]"
             :col-num="colNum"
@@ -65,7 +65,9 @@
               :i="item.i"
               :key="item.i"
             >
+              <i class="el-icon-delete" @click="deleteItem(itemIndex)"></i>
               <div
+                class="grid-item-slot"
                 :contenteditable="designType === 'label'"
                 :title="itemIndex"
                 :class="currentIndex === itemIndex ? 'isActive' : ''"
@@ -79,19 +81,52 @@
                 style="height: 100%;"
                 @input="testContenteditable"
               >
-<!--                {{ item.i }}-->
-                <span v-if="designType === 'label'" contenteditable="true">{{ item.cName }}</span>
-                <span v-else>{{ item.i }}</span>
 
-                <component :is="item.cName" v-if="designType !== 'label' && item.cName"></component>
+                {{ item.i }}
+<!--                <span v-if="designType === 'label'" contenteditable="true">{{ item.cName }}</span>-->
+<!--                <span v-else>{{ item.i }}</span>-->
+
+<!--                <component :is="item.cName" v-if="designType !== 'label' && item.cName"></component>-->
               </div>
             </grid-item>
           </grid-layout>
         </el-card>
       </el-scrollbar>
+      <el-dialog
+        center
+        :title="previewDesign? '预览': '生成JSON'"
+        :visible.sync="dialogVisible"
+        width="1000px">
+        <div class="grid-test" v-if="previewDesign">
+          <div v-for="(li,index) in result" :key="li.gridArea" :style="{gridArea: li.gridArea}">{{li.gridArea}} -- {{index}}</div>
+        </div>
+        <div v-else>
+          {{result}}
+        </div>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+      </el-dialog>
     </main>
     <aside class="viewport-height">
       <h3>配置</h3>
+      <el-tabs v-model="activeName" @tab-click="handleClickTabs" style="padding: 0 15px;">
+        <el-tab-pane label="稿纸配置" name="first">
+          <div>
+            行高<el-input-number style="margin-top: 10px;" v-model="rowHeight" @change="handleChange" :min="1" :max="1000" label="描述文字"></el-input-number>
+          </div>
+          <div style="display: flex;align-items: center;justify-content: center;margin-top: 10px;">
+            字体颜色<el-color-picker style="margin-left: 10px;" v-model="fontColor" @change="changeColor(1)"></el-color-picker>
+          </div>
+          <div style="display: flex;align-items: center;justify-content: center;margin-top: 10px;">
+            边框颜色<el-color-picker style="margin-left: 10px;" v-model="borderColor"  @change="changeColor(2)"></el-color-picker>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="单项配置" name="second">
+
+        </el-tab-pane>
+      </el-tabs>
     </aside>
     <footer>
       footer
@@ -105,7 +140,8 @@ import GridItem from '@/components/vue-grid-layout/GridItem'
 import {draftData, labelData} from '@/views/draft/config/const'
 import labels from '@/const/label'
 import commons from '@/const/elementComponent'
-const initDataMap = {
+import _ from 'lodash'
+const initDataMapImport = {
   label: labelData,
   draft: draftData,
   form: '表单',
@@ -121,24 +157,47 @@ export default {
     return {
       activeNames: ['1'],
       designType: 'draft',
-      initDataMap,
+      initDataMap: initDataMapImport,
+      initDataMapImport,
+      result: [],
       currentIndex: 0,
       //****
       index: 0,
       colNum: 24,
-      rowHeight: 30,
+      rowHeight: 36,
       marginX: 1,
       marginY: 1,
       //****
       labels,
       commons,
       isEnter: false,
+      dialogVisible: false,
+      previewDesign: false,
+      fontColor: '#000000',
+      borderColor: '#e5e5e5',
+      activeName: 'first',
+
     }
   },
   mounted() {
     this.index = this.initDataMap[this.designType].length;
+    this.initDataMap = this.initDataMapImport
   },
   methods: {
+    changeColor(type) {
+      if (type === 1) {
+          let grid = document.querySelectorAll('.grid-item-slot')
+          grid.forEach(item=>{
+            item.style.color = this.fontColor
+          })
+      } else {
+          let grid = document.querySelector('.vue-grid-layout')
+          grid.style.backgroundColor = this.borderColor
+      }
+    },
+    handleClickTabs(tab, event) {
+      console.log(tab, event);
+    },
     //*******
     onDragStart(e) {
       this.isEnter = true
@@ -149,6 +208,9 @@ export default {
     //******
     selectedItem(index) {
       this.currentIndex = index
+    },
+    deleteItem(index){
+      this.initDataMap[this.designType].splice(index,1)
     },
     testContenteditable(e) {
       console.log(e.target)
@@ -181,13 +243,38 @@ export default {
       this.initDataMap[this.designType].push(item);
     },
     save() {},
-    preview() {},
-    reset() {},
-    generateJson() {},
+    preview() {
+      this.result = _.sortBy(this.initDataMap[this.designType], ['y', 'x'])
+      this.result.forEach(item => {
+        item.gridArea = item.y + 1 + '/' + (item.x + 1) + '/' + (item.y + 1 + item.h) + '/' + (item.x + 1 + item.w)
+      })
+      // 先排序的算法才是正确的
+      let rows = this.result[this.result.length - 1].y + this.result[this.result.length - 1].h - 1
+      this.dialogVisible = true
+      this.previewDesign = true
+      setTimeout(()=>{
+        let grid = document.querySelector('.grid-test')
+        grid.style.gridTemplateRows = `repeat(${rows}, 36px)`
+      },0)
+    },
+    reset() {
+      this.initDataMap = this.initDataMapImport
+    },
+    generateJson() {
+      this.result = _.sortBy(this.initDataMap[this.designType], ['y', 'x'])
+      this.result = this.result.map(item => {
+         item.gridArea = item.y + 1 + '/' + (item.x + 1) + '/' + (item.y + 1 + item.h) + '/' + (item.x + 1 + item.w)
+        return {
+          gridArea: item.gridArea
+        }
+      })
+      this.dialogVisible = true
+      this.previewDesign = false
+    },
     //****
     layoutUpdatedEvent() {},
     handleChange(val) {
-      console.log(val)
+      this.rowHeight = val
     }
   }
 }
@@ -196,7 +283,7 @@ export default {
 <style lang="scss" scoped>
 .GridDesign {
   display: grid;
-  grid-template-columns: 250px auto 200px;
+  grid-template-columns: 250px auto 220px;
   grid-template-rows: auto 30px;
   background-color: #ccccee;
   grid-gap: 1px;
@@ -258,6 +345,19 @@ export default {
         }
       }
 
+    }
+  }
+  .grid-test{
+    width: 865px;
+    margin: 0 auto 20px;
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    grid-template-rows: repeat(var(--row-num), var(--row-height));
+    background-color: $--draft-color;
+    border: 1px solid $--draft-color;
+    grid-gap: 1px;
+    >div{
+      background-color: #fff;
     }
   }
   header {

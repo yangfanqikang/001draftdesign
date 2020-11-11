@@ -56,6 +56,16 @@
   box-sizing: border-box;
   cursor: se-resize;
 }
+.vue-grid-item > .el-icon-delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 14px;
+  &:hover{
+    color: red;
+    cursor: pointer;
+  }
+}
 .vue-grid-item > .vue-resizable-handleL {
   position: absolute;
   width: 20px;

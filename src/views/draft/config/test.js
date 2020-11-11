@@ -1,40 +1,3 @@
-export const labelData = [
-  {cName: '', x: 0, y: 0, w: 2, h: 2, i: '0'},
-  {cName: '', x: 2, y: 0, w: 2, h: 4, i: '1'},
-  {cName: '', x: 4, y: 0, w: 2, h: 5, i: '2'}
-]
-export const draftData = [
-  {x: 0, y: 0, w: 24, h: 1, i: '0', moved: false},
-  {x: 0, y: 1, w: 18, h: 2, i: '1', moved: false},
-  {x: 18, y: 1, w: 6, h: 1, i: '2', moved: false},
-  {x: 18, y: 2, w: 6, h: 1, i: '3', moved: false},
-  {x: 0, y: 3, w: 8, h: 6, i: '4', moved: false},
-  {x: 8, y: 3, w: 8, h: 6, i: '5', moved: false},
-  {x: 16, y: 3, w: 8, h: 6, i: '6', moved: false},
-  {x: 0, y: 9, w: 8, h: 6, i: '7', moved: false},
-  {x: 8, y: 9, w: 8, h: 6, i: '8', moved: false},
-  {x: 16, y: 9, w: 8, h: 2, i: '9', moved: false},
-  {x: 16, y: 11, w: 8, h: 2, i: '10', moved: false},
-  {x: 16, y: 13, w: 8, h: 2, i: '11', moved: false},
-  {x: 0, y: 15, w: 8, h: 6, i: '12', moved: false},
-  {x: 8, y: 15, w: 8, h: 6, i: '13', moved: false},
-  {x: 16, y: 15, w: 8, h: 6, i: '14', moved: false},
-  {x: 0, y: 21, w: 24, h: 4, i: '15', moved: false},
-  {x: 0, y: 25, w: 24, h: 4, i: '16', moved: false},
-  {x: 0, y: 29, w: 24, h: 4, i: '17', moved: false},
-  {x: 0, y: 33, w: 24, h: 4, i: '18', moved: false},
-  {x: 0, y: 37, w: 24, h: 3, i: '19', moved: false},
-  {x: 0, y: 40, w: 9, h: 2, i: '21', moved: false},
-  {x: 17, y: 40, w: 7, h: 2, i: '22', moved: false},
-  {x: 0, y: 42, w: 9, h: 2, i: '25', moved: false},
-  {x: 0, y: 49, w: 12, h: 2, i: '26', moved: false},
-  {x: 9, y: 40, w: 8, h: 2, i: '30', moved: false},
-  {x: 12, y: 49, w: 12, h: 2, i: '31', moved: false},
-  {x: 17, y: 42, w: 7, h: 2, i: '34', moved: false},
-  {x: 0, y: 44, w: 24, h: 5, i: '37', moved: false},
-  {x: 9, y: 42, w: 8, h: 2, i: '42', moved: false}
-]
-
 const data = [
   {x: 0, y: 0, w: 24, h: 1, i: '0', moved: false},
   {x: 0, y: 1, w: 18, h: 2, i: '1', moved: false},
@@ -66,8 +29,7 @@ const data = [
   {x: 0, y: 49, w: 12, h: 2, i: '26', moved: false},
   {x: 12, y: 49, w: 12, h: 2, i: '31', moved: false}
 ]
-
-export const result = [
+const result = [
   {x: 0, y: 0, w: 24, h: 1, i: '0', moved: false, gridArea: '1/1/2/25'},
   {x: 0, y: 1, w: 18, h: 2, i: '1', moved: false, gridArea: '2/1/4/19'},
   {x: 18, y: 1, w: 6, h: 1, i: '2', moved: false, gridArea: '2/19/3/25'},
@@ -99,8 +61,8 @@ export const result = [
   {x: 12, y: 49, w: 12, h: 2, i: '31', moved: false, gridArea: '50/13/52/25'}
 ]
 
-export default {
-  labelData,
-  draftData,
-  result
-}
+data.forEach(item => {
+  item.gridArea = item.y + 1 + '/' + (item.x + 1) + '/' + (item.y + 1 + item.h) + '/' + (item.x + 1 + item.w)
+})
+
+console.log('>>>', JSON.stringify(data))

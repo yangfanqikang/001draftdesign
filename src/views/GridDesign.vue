@@ -154,6 +154,7 @@ const initDataMapImport = {
   form: '表单',
   page: '页面'
 }
+let xx = new Array(10000).fill('1')
 export default {
   name: 'GridDesign',
   components: {
@@ -162,6 +163,7 @@ export default {
   },
   data() {
     return {
+      xx,
       activeNames: ['1'],
       designType: 'draft',
       initDataMap: initDataMapImport,

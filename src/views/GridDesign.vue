@@ -101,12 +101,12 @@
           <div v-for="(li,index) in result" :key="li.gridArea" :style="{gridArea: li.gridArea}">{{li.gridArea}} -- {{index}}</div>
         </div>
         <div v-else>
-          {{result}}
+          <pre>{{ JSON.stringify(result, null, 4)  }}</pre>
         </div>
         <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
       </el-dialog>
     </main>
     <aside class="viewport-height">
@@ -114,7 +114,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClickTabs" style="padding: 0 15px;">
         <el-tab-pane label="稿纸配置" name="first">
           <div>
-            行高<el-input-number style="margin-top: 10px;" v-model="rowHeight" @change="handleChange" :min="1" :max="1000" label="描述文字"></el-input-number>
+            行高<el-input-number style="margin-top: 10px;" v-model="rowHeight" @change="handleChangeRowHeight" :min="1" :max="1000" label="描述文字"></el-input-number>
           </div>
           <div style="display: flex;align-items: center;justify-content: center;margin-top: 10px;">
             字体颜色<el-color-picker style="margin-left: 10px;" v-model="fontColor" @change="changeColor(1)"></el-color-picker>
@@ -141,6 +141,13 @@ import {draftData, labelData} from '@/views/draft/config/const'
 import labels from '@/const/label'
 import commons from '@/const/elementComponent'
 import _ from 'lodash'
+const JSONFile = require.context("./draft/config", true, /\.json$/);
+console.log(JSONFile)
+JSONFile.keys().forEach(item=>{
+  console.log(item)
+  console.log(JSONFile(item))
+})
+// 通过这个方式拿到已有稿纸
 const initDataMapImport = {
   label: labelData,
   draft: draftData,
@@ -273,7 +280,10 @@ export default {
     },
     //****
     layoutUpdatedEvent() {},
-    handleChange(val) {
+    handleChange() {
+
+    },
+    handleChangeRowHeight(val){
       this.rowHeight = val
     }
   }

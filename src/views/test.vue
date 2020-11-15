@@ -1,97 +1,99 @@
 <template>
-  <div class="test" v-on="jsxData.on">
-    >>>>>>>>>
+  <div class="test">
+    <el-form :model="form">
+      <el-form-item :prop="form[li.prop]" v-for="li in list" :label="li.label" :key="li.label">
+        <component v-model.trim="form[li.prop]" v-bind="componentAttrs(li)"></component>
+      </el-form-item>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="primary" @click="submit">提交</el-button>
+        </el-button-group>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
-import jsxData from "@/views/draft/config/jsxData";
+import _ from 'lodash'
 export default {
-  name: "test",
+  name: 'test',
+  components: {
+    radioGroup: {
+      functional: true,
+      props: {value: String, list: Array},
+      render(h, {props: {value = '', list = []}, data: {attrs = {}}, listeners: {input}}) {
+        return h(
+          'el-radio-group',
+          {
+            props: {value, ...attrs},
+            on: {
+              input(v) {
+                input(v)
+              }
+            }
+          },
+          list.map(o => h('el-radio', {props: {...o, key: o.label}}, [o.value]))
+        )
+      }
+    }
+  },
   data() {
     return {
-      //
-      jsxData
+      form: {},
+      // 数据
+      list: [
+        {
+          prop: 'labelKey',
+          label: '标签key',
+          is: 'el-input'
+        },
+        {
+          prop: 'keyWidth',
+          label: '宽度',
+          is: 'el-input'
+        },
+        {
+          prop: 'showTitle',
+          label: '标题',
+          is: 'radio-group',
+          list: [
+            {label: '1',value: '展示'},
+            {label: '2',value: '同样展示'},
+          ]
+          // prop: 'gender',
+          // label: '性别',
+          // is: 'radioGroup',
+          // list: [
+          //   {label: 'male', value: '男'},
+          //   {label: 'famale', value: '女'}
+          // ]
+        }
+      ]
     }
   },
-  // render(createElement, context) {
-  //   console.log(context)
-  //   const xxx = {
-  //     // 与 `v-bind:class` 的 API 相同，
-  //     // 接受一个字符串、对象或字符串和对象组成的数组
-  //     'class': {
-  //       foo: true,
-  //       bar: false
-  //     },
-  //     // 与 `v-bind:style` 的 API 相同，
-  //     // 接受一个字符串、对象，或对象组成的数组
-  //     style: {
-  //       color: 'red',
-  //       fontSize: '14px'
-  //     },
-  //     // 普通的 HTML attribute
-  //     attrs: {
-  //       id: 'foo'
-  //     },
-  //     // 组件 prop
-  //     props: {
-  //       myProp: 'bar'
-  //     },
-  //     // DOM property
-  //     domProps: {
-  //       innerHTML: 'baz'
-  //     },
-  //     // 事件监听器在 `on` 内，
-  //     // 但不再支持如 `v-on:keyup.enter` 这样的修饰器。
-  //     // 需要在处理函数中手动检查 keyCode。
-  //     on: {
-  //       click: this.clickHandler
-  //       // click: ()=>{
-  //       //   console.log('>>>>>>>on')
-  //       // }
-  //     },
-  //     // 仅用于组件，用于监听原生事件，而不是组件内部使用
-  //     // `vm.$emit` 触发的事件。
-  //     // nativeOn: {
-  //     //   click: ()=>{
-  //     //     console.log('>>>>>>nativeOn')
-  //     //   }
-  //     //   // click: this.nativeClickHandler
-  //     // },
-  //     // 自定义指令。注意，你无法对 `binding` 中的 `oldValue`
-  //     // 赋值，因为 Vue 已经自动为你进行了同步。
-  //     // directives: [
-  //     //   {
-  //     //     name: 'my-custom-directive',
-  //     //     value: '2',
-  //     //     expression: '1 + 1',
-  //     //     arg: 'foo',
-  //     //     modifiers: {
-  //     //       bar: true
-  //     //     }
-  //     //   }
-  //     // ],
-  //     // 作用域插槽的格式为
-  //     // { name: props => VNode | Array<VNode> }
-  //     scopedSlots: {
-  //       default: props => createElement('span', props.text)
-  //     },
-  //     // 如果组件是其它组件的子组件，需为插槽指定名称
-  //     slot: 'name-of-slot',
-  //     // 其它特殊顶层 property
-  //     key: 'myKey',
-  //     ref: 'myRef',
-  //     // 如果你在渲染函数中给多个元素都应用了相同的 ref 名，
-  //     // 那么 `$refs.myRef` 会变成一个数组。
-  //     refInFor: true
-  //   }
-  //   return createElement('div', xxx)
-  // },
+  mounted() {
+    // 这个不是响应式的对象
+    this.list.forEach(item=>{
+      // this.form = Object.assign(this.form, {[item.prop]: ''})
+      // this.form[item.prop] = ''
+      this.$set(this.form, item.prop, '')
+    })
+    // for (let i = 0; i < this.list.length; i++) {
+    //   this.form[this.list[i].prop] = ''
+    //   this.$set(this.form, indexOfItem, newValue);
+    // }
+    // this.form = this.list.reduce((r, c) => Object.assign(r, {[c.prop]: ''}), {})
+    console.log(this.form)
+  },
   methods: {
-    clickHandler() {
-
+    submit() {
+      console.log(this.form)
+    },
+    componentAttrs(item) {
+      let obj = _.omit(item, ['prop', 'label'])
+      return obj
     }
-  },
+  }
 }
 </script>
 

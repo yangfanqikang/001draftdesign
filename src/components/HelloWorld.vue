@@ -8,7 +8,7 @@
         3.表单设计
         4.页面设计
         5.部件设计</p>
-      <el-button type="primary" @click="$router.push('/DesignCenter')">开始设计</el-button>
+      <el-button type="primary" @click="$router.push('/GridDesign')">开始设计</el-button>
     </div>
   </div>
 </template>

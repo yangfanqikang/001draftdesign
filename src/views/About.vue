@@ -1,102 +1,99 @@
-<!--<template>-->
-<!--  <div class="test" v-on="$listeners">-->
-<!--    test-->
-<!--  </div>-->
-<!--</template>-->
+<template>
+  <MyForm :config="config" @submit="getList" ref="form" />
+</template>
 
 <script>
-import jsxData from "@/views/draft/config/jsxData";
+import MyForm from "@/components/form/MyForm";
+
+const statusLlist = [
+  {label: '未提交', value: '0'},
+  {label: '待审批', value: '1'},
+  {label: '已通过', value: '2', disabled: true}
+]
+
 export default {
-  name: "test",
+  components: {
+    MyForm,
+  },
   data() {
+    const confimPass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.$refs.form.form.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+
     return {
-      jsxData
+      config: {
+        columns: [
+          {prop: 'name', label: '借款人名称', is: 'auto', fetchSuggestions: this.querySearch},
+          {prop: 'certificateId', label: '统一信用代码', rules: [{required: true, message: '请输入统一信用代码'}]},
+          {prop: 'daterange', label: '日期范围', is: 'daterange'},
+          {prop: 'date', label: '日期', is: 'date'},
+          {prop: 'status', label: '状态', is: 'select', list: statusLlist, callback: r => this.statusChange(r)},
+          {prop: 'password', label: '密码', type: 'password'},
+          {prop: 'confimPass', label: '确认密码', type: 'password', rules: [{validator: confimPass}]},
+          {prop: 'remark', label: '备注', type: 'textarea'},
+          {
+            prop: 'email',
+            label: '邮箱',
+            rules: [
+              {required: true, message: '请输入邮箱地址'},
+              {type: 'email', message: '请输入正确的邮箱地址'}
+            ]
+          },
+          {prop: 'remember', label: '记住密码', is: 'checkbox'},
+          {
+            prop: 'gender',
+            label: '性别',
+            is: 'radioGroup',
+            list: [
+              {label: 'male', value: '男'},
+              {label: 'famale', value: '女'}
+            ]
+          },
+          {
+            prop: 'love',
+            label: '爱好',
+            is: 'checkboxGroup',
+            list: [
+              {label: '篮球', value: '0'},
+              {label: '排球', value: '1'},
+              {label: '足球', value: '2', disabled: true}
+            ]
+          },
+          {prop: 'delivery', label: '即时配送', is: 'switch'}
+        ],
+        data: {},
+        rowSize: 3 //一行可以展示几列表单，默认为3列
+      }
     }
   },
-  render(createElement, context) {
-    console.log(context)
-    const xxx = {
-      // 与 `v-bind:class` 的 API 相同，
-      // 接受一个字符串、对象或字符串和对象组成的数组
-      'class': {
-        foo: true,
-        bar: false
-      },
-      // 与 `v-bind:style` 的 API 相同，
-      // 接受一个字符串、对象，或对象组成的数组
-      style: {
-        color: 'red',
-        fontSize: '14px'
-      },
-      // 普通的 HTML attribute
-      attrs: {
-        id: 'foo'
-      },
-      // 组件 prop
-      props: {
-        myProp: 'bar'
-      },
-      // DOM property
-      domProps: {
-        innerHTML: 'baz'
-      },
-      // 事件监听器在 `on` 内，
-      // 但不再支持如 `v-on:keyup.enter` 这样的修饰器。
-      // 需要在处理函数中手动检查 keyCode。
-      on: {
-        click: this.clickHandler
-        // click: ()=>{
-        //   console.log('>>>>>>>on')
-        // }
-      },
-      // 仅用于组件，用于监听原生事件，而不是组件内部使用
-      // `vm.$emit` 触发的事件。
-      nativeOn: {
-        click: ()=>{
-          console.log('>>>>>>nativeOn')
-        }
-        // click: this.nativeClickHandler
-      },
-      // 自定义指令。注意，你无法对 `binding` 中的 `oldValue`
-      // 赋值，因为 Vue 已经自动为你进行了同步。
-      // directives: [
-      //   {
-      //     name: 'my-custom-directive',
-      //     value: '2',
-      //     expression: '1 + 1',
-      //     arg: 'foo',
-      //     modifiers: {
-      //       bar: true
-      //     }
-      //   }
-      // ],
-      // 作用域插槽的格式为
-      // { name: props => VNode | Array<VNode> }
-      scopedSlots: {
-        default: props => createElement('span', props.text)
-      },
-      // 如果组件是其它组件的子组件，需为插槽指定名称
-      slot: 'name-of-slot',
-      // 其它特殊顶层 property
-      key: 'myKey',
-      ref: 'myRef',
-      // 如果你在渲染函数中给多个元素都应用了相同的 ref 名，
-      // 那么 `$refs.myRef` 会变成一个数组。
-      refInFor: true
+  created() {
+    let data = {
+      name: '陈公子',
+      certificateId: '222',
+      status: '0',
+      love: ['0']
     }
-    return (
-      <div on={jsxData.on}>222</div>
-    )
+    this.config.data = data
   },
   methods: {
-    clickHandler() {
-      console.log('>>>>>>>>')
+    querySearch(q, cb) {
+      if (!q) {
+        cb([])
+        return
+      }
+    },
+    getList(res) {
+      console.log(res)
+    },
+    statusChange(r) {
+      console.log(r)
     }
-  },
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-.test {
-}
-</style>
